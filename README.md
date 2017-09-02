@@ -1,14 +1,5 @@
 # lambda-deployment-example
 
-A Clojure library designed to ... well, that part is up to you.
+An example of how to deploy a Lambda function automatically using CodePipeline and Terraform.
 
-## Usage
-
-FIXME
-
-## License
-
-Copyright © 2017 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Discussion on [Medium](https://medium.com/@jdhollis/automated-lambda-deployments-with-terraform-codepipeline-a7aa249cec17).
