@@ -1,0 +1,21 @@
+version: 0.2
+
+env:
+  variables:
+    TERRAFORM_VERSION: 0.10.3
+    TERRAFORM_SHA256: f316c6ff8b2abe257250d19cbe0e3cf745dedfa67b37bb4afaf95e0291efeade
+
+phases:
+  install:
+    commands:
+      - yum -y install jq
+      - curl 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI | jq 'to_entries | [ .[] | select(.key | (contains("Expiration") or contains("RoleArn")) | not) ] | map(if .key == "AccessKeyId" then . + {"key":"AWS_ACCESS_KEY_ID"} else . end) | map(if .key == "SecretAccessKey" then . + {"key":"AWS_SECRET_ACCESS_KEY"} else . end) | map(if .key == "Token" then . + {"key":"AWS_SESSION_TOKEN"} else . end) | map("export \(.key)=\(.value)") | .[]' -r > /tmp/aws_credentials # See https://github.com/hashicorp/terraform/issues/8746
+      - cd /tmp && curl -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && echo "${TERRAFORM_SHA256} terraform.zip" | sha256sum -c --quiet && unzip terraform.zip && mv terraform /usr/bin
+  pre_build:
+    commands:
+      - cd $CODEBUILD_SRC_DIR
+      - aws s3 cp lambda-deployment-example.jar s3://${BUILD_ARTIFACTS_BUCKET}/lambda/deployed/lambda-deployment-example.jar --sse aws:kms --sse-kms-key-id $BUILD_ARTIFACTS_KMS_KEY_ARN
+  build:
+    commands:
+      - source /tmp/aws_credentials && terraform init -no-color -backend-config "bucket=${TERRAFORM_STATE_BUCKET}" -backend-config "region=${TERRAFORM_STATE_REGION}" -backend-config "dynamodb_table=${TERRAFORM_STATE_LOCKING_TABLE}" -backend-config "kms_key_id=${TERRAFORM_STATE_KMS_KEY_ARN}"
+      - source /tmp/aws_credentials && terraform apply -no-color -var "region=${REGION}" -var "build_artifacts_bucket=${BUILD_ARTIFACTS_BUCKET}"

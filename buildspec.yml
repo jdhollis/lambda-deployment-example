@@ -1,0 +1,25 @@
+version: 0.2
+
+env:
+  variables:
+    LEIN_ROOT: 1
+
+phases:
+  install:
+    commands:
+      - curl -o /tmp/lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+      - chmod a+x /tmp/lein
+      - mv /tmp/lein /usr/bin/
+  build:
+    commands:
+      - lein uberjar
+  post_build:
+    commands:
+      - mkdir artifacts
+      - cp -R deployment/* artifacts/
+      - cp target/lambda-deployment-example.jar artifacts/
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: artifacts
