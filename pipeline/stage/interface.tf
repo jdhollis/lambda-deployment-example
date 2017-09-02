@@ -10,6 +10,14 @@ variable "function_name" {
   type = "string"
 }
 
+variable "function_arn" {
+  type = "string"
+}
+
+variable "function_jar" {
+  type = "string"
+}
+
 #
 # Deployer
 #

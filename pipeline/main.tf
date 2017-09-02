@@ -11,6 +11,8 @@ module "env" {
   assume_role_arn = ""
 
   function_name = "lambda-deployment-example"
+  function_arn  = ""
+  function_jar  = "lambda-deployment-example.jar"
 
   source_github_token = ""
   source_owner        = ""

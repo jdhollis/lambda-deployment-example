@@ -182,6 +182,21 @@ resource "aws_codebuild_project" "deployer" {
       value = "${var.lambda_build_artifacts_key_arn}"
     }
 
+    environment_variable {
+      name  = "FUNCTION_NAME"
+      value = "${var.function_name}"
+    }
+
+    environment_variable {
+      name  = "FUNCTION_ARN"
+      value = "${var.function_arn}"
+    }
+
+    environment_variable {
+      name  = "FUNCTION_JAR"
+      value = "${var.function_jar}"
+    }
+
     # Add function-specific environment variables here
   }
 

@@ -11,6 +11,9 @@ module "deployer" {
   source = "../deployer"
 
   function_name = "${var.function_name}"
+  function_arn  = "${var.function_arn}"
+  function_jar  = "${var.function_jar}"
+
   pipeline_name = "${var.function_name}-pipeline"
 
   lambda_build_artifacts_bucket  = "${var.lambda_build_artifacts_bucket}"

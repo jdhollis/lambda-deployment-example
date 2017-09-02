@@ -18,4 +18,4 @@ phases:
   build:
     commands:
       - source /tmp/aws_credentials && terraform init -no-color -backend-config "bucket=${TERRAFORM_STATE_BUCKET}" -backend-config "region=${TERRAFORM_STATE_REGION}" -backend-config "dynamodb_table=${TERRAFORM_STATE_LOCKING_TABLE}" -backend-config "kms_key_id=${TERRAFORM_STATE_KMS_KEY_ARN}"
-      - source /tmp/aws_credentials && terraform apply -no-color -var "region=${REGION}" -var "build_artifacts_bucket=${BUILD_ARTIFACTS_BUCKET}"
+      - source /tmp/aws_credentials && terraform apply -no-color -var "region=${REGION}" -var "build_artifacts_bucket=${BUILD_ARTIFACTS_BUCKET}" -var "function_name=${FUNCTION_NAME}" -var "function_handler=${FUNCTION_HANDLER}" -var "function_jar=${FUNCTION_JAR}"
